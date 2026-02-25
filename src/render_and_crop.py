@@ -1,6 +1,7 @@
 import fitz  # PyMuPDF
 from PIL import Image
 import io
+from pathlib import Path
 
 # Adjust after you confirm invoice layout
 RENDER_DPI = 150
@@ -32,23 +33,43 @@ def crop_thumbnail_from_page_png(page_png_path: str, out_thumb_path: str):
     thumb.save(out_thumb_path, "PNG")
 
 
-def extract_images_from_pdf(pdf_path: str) -> list[bytes]:
-    """
-    Alternative: extract embedded images directly from PDF.
-    This is less reliable than render+crop, but can work if images are cleanly embedded.
-    """
+def extract_product_images_from_pdf(pdf_path: str) -> list[bytes]:
+    """Extract likely product images from PDF (large near-square embedded images)."""
     doc = fitz.open(pdf_path)
-    images = []
-    
+    images: list[bytes] = []
+    seen_xrefs: set[int] = set()
+
     for page_num in range(len(doc)):
         page = doc[page_num]
-        image_list = page.get_images()
-        
-        for img_index, img_info in enumerate(image_list):
+        image_list = page.get_images(full=True)
+
+        for img_info in image_list:
             xref = img_info[0]
+            if xref in seen_xrefs:
+                continue
+            seen_xrefs.add(xref)
+
             base_image = doc.extract_image(xref)
+            width = int(base_image.get("width", 0))
+            height = int(base_image.get("height", 0))
+            if width < 600 or height < 600:
+                continue
+
+            ratio = width / height if height else 0
+            if ratio < 0.8 or ratio > 1.25:
+                continue
+
             image_bytes = base_image["image"]
             images.append(image_bytes)
-    
+
     doc.close()
     return images
+
+
+def save_image_bytes_as_png(image_bytes: bytes, out_path: str):
+    """Save any supported image bytes as a PNG file."""
+    out_file = Path(out_path)
+    out_file.parent.mkdir(parents=True, exist_ok=True)
+
+    with Image.open(io.BytesIO(image_bytes)) as img:
+        img.convert("RGB").save(out_file, "PNG")

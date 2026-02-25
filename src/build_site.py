@@ -3,11 +3,11 @@ from pathlib import Path
 from datetime import datetime
 
 def group_inventory(items: list[dict]) -> list[dict]:
-    """Group by material+variant+pack and sum totalKg"""
+    """Group by SKU+material+variant+pack and sum totalKg"""
     groups = {}
     
     for item in items:
-        key = f"{item['material']}|||{item['variant']}|||{item['pack']}"
+        key = f"{item['sku']}|||{item['material']}|||{item['variant']}|||{item['pack']}"
         
         if key not in groups:
             groups[key] = {**item, "totalKg": 0}
@@ -48,6 +48,11 @@ def build_site(db_path: str = "site/db.json"):
     
     with open(site_dir / "data.json", "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
+
+    with open(site_dir / "data.js", "w", encoding="utf-8") as f:
+      f.write("window.__FILAMENT_DATA__ = ")
+      json.dump(data, f)
+      f.write(";\n")
     
     # Write index.html
     html = """<!doctype html>
@@ -79,10 +84,14 @@ def build_site(db_path: str = "site/db.json"):
     <tbody id="rows"></tbody>
   </table>
 
+  <script src="./data.js"></script>
   <script>
     async function main(){
-      const res = await fetch("./data.json");
-      const data = await res.json();
+      let data = window.__FILAMENT_DATA__;
+      if(!data){
+        const res = await fetch("./data.json");
+        data = await res.json();
+      }
       document.getElementById("meta").textContent = "Updated: " + data.updatedAt;
 
       const tbody = document.getElementById("rows");

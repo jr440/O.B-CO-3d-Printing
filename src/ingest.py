@@ -7,8 +7,13 @@ import fitz  # PyMuPDF
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-from parse_text import parse_invoice_text_to_lines
-from render_and_crop import render_first_page_to_png, crop_thumbnail_from_page_png
+from parse_text import parse_invoice_text
+from render_and_crop import (
+    render_first_page_to_png,
+    crop_thumbnail_from_page_png,
+    extract_product_images_from_pdf,
+    save_image_bytes_as_png,
+)
 from build_site import build_site
 
 INVOICES_DIR = Path("invoices")
@@ -56,29 +61,53 @@ def ingest_one(pdf_path: Path) -> dict:
     
     # Extract text and parse
     text = extract_text_from_pdf(pdf_path)
-    lines = parse_invoice_text_to_lines(text)
+    parsed = parse_invoice_text(text)
+    lines = parsed.lines
     
-    # Render page 1 to PNG
-    page_png = TMP_DIR / f"{pdf_path.stem}.page1.png"
-    render_first_page_to_png(str(pdf_path), str(page_png))
-    
-    # Crop thumbnail for each SKU (placeholder: same crop for all)
-    # Once we know your invoice layout, we'll crop per-line thumbnails
-    for line in lines:
-        out_thumb = IMAGES_DIR / f"{line['sku']}.png"
+    product_images = extract_product_images_from_pdf(str(pdf_path))
+    used_embedded = 0
+
+    if product_images:
+        for i, line in enumerate(lines):
+            if i >= len(product_images):
+                break
+            out_thumb = IMAGES_DIR / f"{line['sku']}.png"
+            try:
+                save_image_bytes_as_png(product_images[i], str(out_thumb))
+                used_embedded += 1
+            except Exception as e:
+                print(f"  Warning: couldn't save embedded image for {line['sku']}: {e}")
+
+    if used_embedded == 0 and parsed.supplier == "bambu":
+        page_png = TMP_DIR / f"{pdf_path.stem}.page1.png"
+        render_first_page_to_png(str(pdf_path), str(page_png))
+
         try:
-            crop_thumbnail_from_page_png(str(page_png), str(out_thumb))
-        except Exception as e:
-            print(f"  Warning: couldn't crop thumbnail for {line['sku']}: {e}")
+            for line in lines:
+                out_thumb = IMAGES_DIR / f"{line['sku']}.png"
+                try:
+                    crop_thumbnail_from_page_png(str(page_png), str(out_thumb))
+                except Exception as e:
+                    print(f"  Warning: couldn't crop thumbnail for {line['sku']}: {e}")
+        finally:
+            try:
+                if page_png.exists():
+                    page_png.unlink()
+            except Exception as e:
+                print(f"  Warning: couldn't remove temp file {page_png.name}: {e}")
+    elif used_embedded == 0:
+        print("  Info: no embedded product images found for this supplier; skipping thumbnail fallback")
     
     return {
         "sourceFile": invoice_key_from_filename(pdf_path),
         "ingestedAt": datetime.now().isoformat(),
+        "supplier": parsed.supplier,
+        "parseConfidence": parsed.confidence,
         "lines": lines
     }
 
 
-def ingest_all():
+def ingest_all(reprocess_existing: bool = False):
     """Process all PDFs in invoices/ folder"""
     INVOICES_DIR.mkdir(exist_ok=True)
     
@@ -86,17 +115,33 @@ def ingest_all():
     db = load_db()
     
     existing = {inv["sourceFile"] for inv in db}
+    newly_ingested = 0
+    failed = 0
     
     for pdf_path in pdf_files:
-        if pdf_path.name in existing:
+        if not reprocess_existing and pdf_path.name in existing:
             continue
-        
-        invoice = ingest_one(pdf_path)
-        db.append(invoice)
-        save_db(db)
+
+        try:
+            invoice = ingest_one(pdf_path)
+            replaced = False
+            for idx, existing_invoice in enumerate(db):
+                if existing_invoice.get("sourceFile") == invoice["sourceFile"]:
+                    db[idx] = invoice
+                    replaced = True
+                    break
+            if not replaced:
+                db.append(invoice)
+            save_db(db)
+            newly_ingested += 1
+        except Exception as e:
+            failed += 1
+            print(f"✗ Failed to ingest {pdf_path.name}: {e}")
     
     build_site(str(DB_PATH))
-    print(f"✓ Ingested {len(pdf_files)} invoices")
+    print(f"✓ Ingested {newly_ingested} new invoice(s)")
+    if failed:
+        print(f"⚠ Skipped {failed} invoice(s) due to errors")
 
 
 class InvoiceHandler(FileSystemEventHandler):
@@ -111,6 +156,7 @@ class InvoiceHandler(FileSystemEventHandler):
 
 def watch_invoices():
     """Watch invoices/ folder for new PDFs"""
+    INVOICES_DIR.mkdir(exist_ok=True)
     event_handler = InvoiceHandler()
     observer = Observer()
     observer.schedule(event_handler, str(INVOICES_DIR), recursive=False)
