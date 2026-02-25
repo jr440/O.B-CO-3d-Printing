@@ -16,6 +16,7 @@ from render_and_crop import (
     extract_product_images_from_pdf,
     save_image_bytes_as_png,
     save_image_source_as_png,
+    create_placeholder_thumbnail,
 )
 from build_site import build_site
 
@@ -222,12 +223,12 @@ def apply_line_overrides(lines: list[dict], overrides: dict[str, dict]) -> int:
     return applied
 
 
-def apply_image_map_for_lines(lines: list[dict], image_map: dict[str, str]) -> int:
+def apply_image_map_for_lines(lines: list[dict], image_map: dict[str, str]) -> set[str]:
     """Apply mapped image sources to line-item SKU thumbnails."""
     if not image_map:
-        return 0
+        return set()
 
-    applied = 0
+    mapped_skus: set[str] = set()
     for line in lines:
         sku = str(line.get("sku", "")).upper()
         if not sku:
@@ -246,11 +247,11 @@ def apply_image_map_for_lines(lines: list[dict], image_map: dict[str, str]) -> i
         out_thumb = IMAGES_DIR / f"{sku}.png"
         try:
             save_image_source_as_png(resolved_source, str(out_thumb))
-            applied += 1
+            mapped_skus.add(sku)
         except Exception as e:
             print(f"  Warning: couldn't apply mapped image for {sku}: {e}")
 
-    return applied
+    return mapped_skus
 
 
 def ingest_one(pdf_path: Path) -> dict:
@@ -293,6 +294,7 @@ def ingest_one(pdf_path: Path) -> dict:
         print(f"  ✓ Applied {overrides_applied} line override(s)")
 
     used_embedded = 0
+    embedded_skus: set[str] = set()
 
     if product_images:
         for i, line in enumerate(lines):
@@ -302,6 +304,7 @@ def ingest_one(pdf_path: Path) -> dict:
             try:
                 save_image_bytes_as_png(product_images[i], str(out_thumb))
                 used_embedded += 1
+                embedded_skus.add(str(line.get("sku", "")).upper())
             except Exception as e:
                 print(f"  Warning: couldn't save embedded image for {line['sku']}: {e}")
 
@@ -325,9 +328,34 @@ def ingest_one(pdf_path: Path) -> dict:
     elif used_embedded == 0:
         print("  Info: no embedded product images found for this supplier; skipping thumbnail fallback")
 
-    mapped_images = apply_image_map_for_lines(lines, image_map)
-    if mapped_images:
-        print(f"  ✓ Applied {mapped_images} mapped image(s)")
+    mapped_skus = apply_image_map_for_lines(lines, image_map)
+    if mapped_skus:
+        print(f"  ✓ Applied {len(mapped_skus)} mapped image(s)")
+
+    placeholder_images = 0
+    for line in lines:
+        sku = str(line.get("sku", "")).upper()
+        if not sku:
+            continue
+        if sku in embedded_skus or sku in mapped_skus:
+            continue
+
+        out_thumb = IMAGES_DIR / f"{sku}.png"
+        should_refresh_placeholder = parsed.supplier in {"jaycar", "generic"}
+        if out_thumb.exists() and not should_refresh_placeholder:
+            continue
+
+        create_placeholder_thumbnail(
+            str(out_thumb),
+            sku,
+            str(line.get("manufacturer", "Unknown")),
+            str(line.get("material", "Unknown")),
+            str(line.get("variant", "")),
+        )
+        placeholder_images += 1
+
+    if placeholder_images:
+        print(f"  ✓ Created {placeholder_images} placeholder image(s)")
     
     return {
         "sourceFile": invoice_key_from_filename(pdf_path),

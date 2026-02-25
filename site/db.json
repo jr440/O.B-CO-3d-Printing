@@ -1,7 +1,7 @@
 [
   {
     "sourceFile": "AU694854094675611649.pdf",
-    "ingestedAt": "2026-02-25T10:21:55.429874",
+    "ingestedAt": "2026-02-25T10:41:33.056228",
     "supplier": "bambu",
     "parseConfidence": 0.95,
     "lines": [
@@ -89,7 +89,7 @@
   },
   {
     "sourceFile": "AU694897816407859200.pdf",
-    "ingestedAt": "2026-02-25T10:21:55.898695",
+    "ingestedAt": "2026-02-25T10:41:33.534900",
     "supplier": "bambu",
     "parseConfidence": 0.95,
     "lines": [
@@ -121,7 +121,7 @@
   },
   {
     "sourceFile": "AU700216730441097217.pdf",
-    "ingestedAt": "2026-02-25T10:21:57.845674",
+    "ingestedAt": "2026-02-25T10:41:35.174854",
     "supplier": "bambu",
     "parseConfidence": 0.95,
     "lines": [
@@ -209,7 +209,7 @@
   },
   {
     "sourceFile": "AU701514611707666433.pdf",
-    "ingestedAt": "2026-02-25T10:21:58.859890",
+    "ingestedAt": "2026-02-25T10:41:36.173494",
     "supplier": "bambu",
     "parseConfidence": 0.95,
     "lines": [
@@ -257,7 +257,7 @@
   },
   {
     "sourceFile": "order-502-2-2155414.pdf",
-    "ingestedAt": "2026-02-25T10:22:29.185720",
+    "ingestedAt": "2026-02-25T10:42:05.777358",
     "supplier": "jaycar",
     "parseConfidence": 0.9,
     "lines": [
@@ -369,7 +369,7 @@
   },
   {
     "sourceFile": "order-440-4-4260472.pdf",
-    "ingestedAt": "2026-02-25T10:22:29.170731",
+    "ingestedAt": "2026-02-25T10:42:05.697266",
     "supplier": "jaycar",
     "parseConfidence": 0.9,
     "lines": [
@@ -393,7 +393,7 @@
   },
   {
     "sourceFile": "order-516-2-2057449.pdf",
-    "ingestedAt": "2026-02-25T10:22:29.198621",
+    "ingestedAt": "2026-02-25T10:42:05.805884",
     "supplier": "jaycar",
     "parseConfidence": 0.9,
     "lines": [
@@ -425,7 +425,7 @@
   },
   {
     "sourceFile": "Order details _ eBay1.pdf",
-    "ingestedAt": "2026-02-25T10:22:15.506378",
+    "ingestedAt": "2026-02-25T10:41:52.131954",
     "supplier": "ebay",
     "parseConfidence": 0.85,
     "lines": [
@@ -513,7 +513,7 @@
   },
   {
     "sourceFile": "Order details _ eBay2.pdf",
-    "ingestedAt": "2026-02-25T10:22:29.159558",
+    "ingestedAt": "2026-02-25T10:42:05.668894",
     "supplier": "ebay",
     "parseConfidence": 0.85,
     "lines": [

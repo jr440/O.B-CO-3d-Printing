@@ -1,8 +1,9 @@
 import fitz  # PyMuPDF
-from PIL import Image
+from PIL import Image, ImageDraw
 import io
 from pathlib import Path
 from urllib.request import urlopen
+import hashlib
 
 # Adjust after you confirm invoice layout
 RENDER_DPI = 150
@@ -89,3 +90,54 @@ def save_image_source_as_png(source: str, out_path: str):
         image_bytes = source_path.read_bytes()
 
     save_image_bytes_as_png(image_bytes, out_path)
+
+
+def _color_from_variant(variant: str, sku: str) -> tuple[int, int, int]:
+    low = (variant or "").lower()
+    palette = [
+        (["white", "bone white", "ivory"], (218, 222, 232)),
+        (["black", "charcoal"], (50, 52, 60)),
+        (["grey", "gray", "silver"], (120, 124, 136)),
+        (["pink", "magenta", "sakura"], (190, 120, 170)),
+        (["red", "crimson"], (176, 78, 78)),
+        (["blue", "sky", "cyan"], (96, 120, 190)),
+        (["green", "mint", "olive"], (102, 144, 82)),
+        (["yellow", "lemon", "gold"], (182, 164, 88)),
+        (["orange", "mandarin"], (196, 122, 72)),
+        (["purple", "violet"], (126, 104, 176)),
+        (["brown", "chocolate", "cocoa", "wood"], (116, 95, 82)),
+        (["beige"], (178, 156, 120)),
+    ]
+    for keys, color in palette:
+        if any(k in low for k in keys):
+            return color
+
+    digest = hashlib.md5(sku.encode("utf-8")).digest()
+    return (20 + digest[0] // 2, 26 + digest[1] // 2, 36 + digest[2] // 2)
+
+
+def create_placeholder_thumbnail(
+    out_path: str,
+    sku: str,
+    manufacturer: str,
+    material: str,
+    variant: str = "",
+):
+    """Create a simple fallback thumbnail card when no real product image exists."""
+    bg_color = _color_from_variant(variant, sku)
+
+    image = Image.new("RGB", (512, 512), bg_color)
+    draw = ImageDraw.Draw(image)
+
+    luminance = 0.2126 * bg_color[0] + 0.7152 * bg_color[1] + 0.0722 * bg_color[2]
+    fg_color = (16, 22, 34) if luminance > 150 else (235, 240, 252)
+
+    text_lines = [manufacturer or "Unknown", material or "Unknown", sku or "SKU"]
+    y = 120
+    for line in text_lines:
+        draw.text((24, y), line[:32], fill=fg_color)
+        y += 56
+
+    out_file = Path(out_path)
+    out_file.parent.mkdir(parents=True, exist_ok=True)
+    image.save(out_file, "PNG")
