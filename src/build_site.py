@@ -5,17 +5,40 @@ from datetime import datetime
 def group_inventory(items: list[dict]) -> list[dict]:
     """Group by SKU+material+variant+pack and sum totalKg"""
     groups = {}
-    
+
     for item in items:
-        key = f"{item['sku']}|||{item['material']}|||{item['variant']}|||{item['pack']}"
-        
+        sku = item.get("sku", "Unknown")
+        manufacturer = item.get("manufacturer", "Unknown")
+        material = item.get("material", "Unknown")
+        variant = item.get("variant", "Unknown")
+        pack = item.get("pack", "Unknown")
+        qty_kg = item.get("qtyKg", 0)
+
+        key = f"{sku}|||{manufacturer}|||{material}|||{variant}|||{pack}"
+
         if key not in groups:
-            groups[key] = {**item, "totalKg": 0}
-        
-        groups[key]["totalKg"] += item["qtyKg"]
-    
+            groups[key] = {
+                **item,
+                "sku": sku,
+                "manufacturer": manufacturer,
+                "material": material,
+                "variant": variant,
+                "pack": pack,
+                "totalKg": 0,
+            }
+
+        groups[key]["totalKg"] += qty_kg
+
     # Sort
-    result = sorted(groups.values(), key=lambda x: (x["material"], x["variant"], x["pack"]))
+    result = sorted(
+        groups.values(),
+        key=lambda x: (
+            x.get("manufacturer", "Unknown"),
+            x.get("material", "Unknown"),
+            x.get("variant", "Unknown"),
+            x.get("pack", "Unknown"),
+        ),
+    )
     return result
 
 
@@ -78,7 +101,7 @@ def build_site(db_path: str = "site/db.json"):
   <table>
     <thead>
       <tr>
-        <th>Pic</th><th>Type</th><th>Colour</th><th>Pack</th><th>Total (kg)</th><th>SKU</th>
+        <th>Pic</th><th>Maker</th><th>Type</th><th>Colour</th><th>Pack</th><th>Total (kg)</th><th>SKU</th>
       </tr>
     </thead>
     <tbody id="rows"></tbody>
@@ -104,6 +127,7 @@ def build_site(db_path: str = "site/db.json"):
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><div class="thumb"><img alt="${r.sku}"></div></td>
+          <td>${r.manufacturer || "Unknown"}</td>
           <td>${r.material}</td>
           <td>${r.variant}</td>
           <td>${r.pack}</td>

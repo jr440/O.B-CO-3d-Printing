@@ -1,12 +1,13 @@
 [
   {
     "sourceFile": "AU694854094675611649.pdf",
-    "ingestedAt": "2026-02-25T08:51:00.077496",
+    "ingestedAt": "2026-02-25T10:21:55.429874",
     "supplier": "bambu",
     "parseConfidence": 0.95,
     "lines": [
       {
         "sku": "A06-W0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Silk+",
         "variant": "White (13110)",
         "pack": "Spool",
@@ -14,6 +15,7 @@
       },
       {
         "sku": "A06-R1-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Silk+",
         "variant": "White (13110)",
         "pack": "Spool",
@@ -21,6 +23,7 @@
       },
       {
         "sku": "A06-B0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Silk+",
         "variant": "Rose Gold (13206)",
         "pack": "Spool",
@@ -28,6 +31,7 @@
       },
       {
         "sku": "A06-P0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Silk+",
         "variant": "Baby Blue (13603)",
         "pack": "Spool",
@@ -35,6 +39,7 @@
       },
       {
         "sku": "A06-Y1-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Silk+",
         "variant": "Purple (13702)",
         "pack": "Spool",
@@ -42,6 +47,7 @@
       },
       {
         "sku": "A01-B3-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Matte",
         "variant": "Matte Marine Blue (11600)",
         "pack": "Spool",
@@ -49,6 +55,7 @@
       },
       {
         "sku": "A01-A2-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Matte",
         "variant": "Matte Marine Blue (11600)",
         "pack": "Spool",
@@ -56,6 +63,7 @@
       },
       {
         "sku": "A00-B9-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Matte Mandarin Orange (11300)",
         "pack": "Spool",
@@ -63,6 +71,7 @@
       },
       {
         "sku": "A00-G6-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Blue (10601)",
         "pack": "Spool",
@@ -70,6 +79,7 @@
       },
       {
         "sku": "B00-D1-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "ABS",
         "variant": "Bambu Green (10501)",
         "pack": "Spool",
@@ -79,12 +89,13 @@
   },
   {
     "sourceFile": "AU694897816407859200.pdf",
-    "ingestedAt": "2026-02-25T08:51:00.553470",
+    "ingestedAt": "2026-02-25T10:21:55.898695",
     "supplier": "bambu",
     "parseConfidence": 0.95,
     "lines": [
       {
         "sku": "A00-W1-1.75-1000-SPLFREE",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Jade White (10100)",
         "pack": "Refill",
@@ -92,6 +103,7 @@
       },
       {
         "sku": "A00-K0-1.75-1000-SPLFREE",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Jade White (10100)",
         "pack": "Refill",
@@ -99,6 +111,7 @@
       },
       {
         "sku": "A00-P6-1.75-1000-SPLFREE",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Black (10101)",
         "pack": "Refill",
@@ -108,12 +121,13 @@
   },
   {
     "sourceFile": "AU700216730441097217.pdf",
-    "ingestedAt": "2026-02-25T08:51:02.209600",
+    "ingestedAt": "2026-02-25T10:21:57.845674",
     "supplier": "bambu",
     "parseConfidence": 0.95,
     "lines": [
       {
         "sku": "A17-B2-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Silk+",
         "variant": "Teal (13612)",
         "pack": "Spool",
@@ -121,6 +135,7 @@
       },
       {
         "sku": "A06-G0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Silk+",
         "variant": "Teal (13612)",
         "pack": "Spool",
@@ -128,6 +143,7 @@
       },
       {
         "sku": "A06-G1-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Silk+",
         "variant": "Candy Green (13506)",
         "pack": "Spool",
@@ -135,6 +151,7 @@
       },
       {
         "sku": "A01-K1-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Matte",
         "variant": "Mint (13507)",
         "pack": "Spool",
@@ -142,6 +159,7 @@
       },
       {
         "sku": "A00-Y2-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Matte Charcoal (11101)",
         "pack": "Spool",
@@ -149,6 +167,7 @@
       },
       {
         "sku": "A00-N1-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Cocoa Brown (10802)",
         "pack": "Spool",
@@ -156,6 +175,7 @@
       },
       {
         "sku": "A00-D0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Cocoa Brown (10802)",
         "pack": "Spool",
@@ -163,6 +183,7 @@
       },
       {
         "sku": "A00-R0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Translucent",
         "variant": "Gray (10103)",
         "pack": "Spool",
@@ -170,6 +191,7 @@
       },
       {
         "sku": "A17-A0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Matte",
         "variant": "Red (10200)",
         "pack": "Spool",
@@ -177,6 +199,7 @@
       },
       {
         "sku": "A01-D3-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Matte",
         "variant": "Orange (13301)",
         "pack": "Spool",
@@ -186,12 +209,13 @@
   },
   {
     "sourceFile": "AU701514611707666433.pdf",
-    "ingestedAt": "2026-02-25T08:51:02.988380",
+    "ingestedAt": "2026-02-25T10:21:58.859890",
     "supplier": "bambu",
     "parseConfidence": 0.95,
     "lines": [
       {
         "sku": "A00-Y2-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Sunflower Yellow (10402)",
         "pack": "Spool",
@@ -199,6 +223,7 @@
       },
       {
         "sku": "A00-D0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "PLA Basic",
         "variant": "Sunflower Yellow (10402)",
         "pack": "Spool",
@@ -206,6 +231,7 @@
       },
       {
         "sku": "B00-R0-1.75-1000-SPLFREE",
+        "manufacturer": "Bambu Lab",
         "material": "ABS",
         "variant": "ABS Orange (40300)",
         "pack": "Refill",
@@ -213,6 +239,7 @@
       },
       {
         "sku": "B00-K0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "ABS",
         "variant": "ABS Red (40200)",
         "pack": "Spool",
@@ -220,6 +247,7 @@
       },
       {
         "sku": "B00-W0-1.75-1000-SPL",
+        "manufacturer": "Bambu Lab",
         "material": "ABS",
         "variant": "ABS Black (40101)",
         "pack": "Spool",
@@ -229,12 +257,13 @@
   },
   {
     "sourceFile": "order-502-2-2155414.pdf",
-    "ingestedAt": "2026-02-25T08:51:03.004438",
+    "ingestedAt": "2026-02-25T10:22:29.185720",
     "supplier": "jaycar",
     "parseConfidence": 0.9,
     "lines": [
       {
         "sku": "TL6250",
+        "manufacturer": "SUNLU",
         "material": "PLA Silk+",
         "variant": "SUNLU Silk PLA+ Dual Color Pink Gold 1.7",
         "pack": "Spool",
@@ -242,6 +271,7 @@
       },
       {
         "sku": "TL6529",
+        "manufacturer": "Elegoo",
         "material": "TPU",
         "variant": "Elegoo TPU filament Green 1.75mm 1kg",
         "pack": "Spool",
@@ -249,6 +279,7 @@
       },
       {
         "sku": "TL6418",
+        "manufacturer": "Elegoo",
         "material": "PLA Silk+",
         "variant": "Elegoo Silk PLA filament Silk Blue Purpl",
         "pack": "Spool",
@@ -256,6 +287,7 @@
       },
       {
         "sku": "TL6421",
+        "manufacturer": "Elegoo",
         "material": "PLA Silk+",
         "variant": "Elegoo Silk PLA filament Silk Copper 1.7",
         "pack": "Spool",
@@ -263,6 +295,7 @@
       },
       {
         "sku": "TL6433",
+        "manufacturer": "Elegoo",
         "material": "PLA",
         "variant": "Elegoo Galaxy PLA filament Galaxy Purple",
         "pack": "Spool",
@@ -270,6 +303,7 @@
       },
       {
         "sku": "TL6470",
+        "manufacturer": "Elegoo",
         "material": "PLA+",
         "variant": "Elegoo PLA PLUS filament Beige 1.75mm 1k",
         "pack": "Spool",
@@ -277,6 +311,7 @@
       },
       {
         "sku": "TL6413",
+        "manufacturer": "Elegoo",
         "material": "PLA",
         "variant": "Elegoo PLA filament Wood color 1.75mm 1k",
         "pack": "Spool",
@@ -284,6 +319,7 @@
       },
       {
         "sku": "TL6476",
+        "manufacturer": "Slic3D",
         "material": "PLA",
         "variant": "Slic3D PLA Spool-Less Red 1.75mm 1kg fil",
         "pack": "Refill",
@@ -291,6 +327,7 @@
       },
       {
         "sku": "TL6482",
+        "manufacturer": "Slic3D",
         "material": "PLA",
         "variant": "Slic3D PLA Spool-Less Pink 1.75mm 1kg fi",
         "pack": "Refill",
@@ -298,6 +335,7 @@
       },
       {
         "sku": "TL6474",
+        "manufacturer": "Slic3D",
         "material": "PLA",
         "variant": "Slic3D PLA Spool-Less White 1.75mm 1kg f",
         "pack": "Refill",
@@ -305,6 +343,7 @@
       },
       {
         "sku": "TL6473",
+        "manufacturer": "Slic3D",
         "material": "PLA",
         "variant": "Slic3D PLA Spool-Less Black 1.75mm 1kg f",
         "pack": "Refill",
@@ -312,6 +351,7 @@
       },
       {
         "sku": "TL6475",
+        "manufacturer": "Slic3D",
         "material": "PLA",
         "variant": "Slic3D PLA Spool-Less Grey 1.75mm 1kg fi",
         "pack": "Refill",
@@ -319,6 +359,7 @@
       },
       {
         "sku": "TL6417",
+        "manufacturer": "Elegoo",
         "material": "PLA",
         "variant": "Elegoo PLA filament Translucent 1.75mm 1",
         "pack": "Spool",
@@ -328,12 +369,13 @@
   },
   {
     "sourceFile": "order-440-4-4260472.pdf",
-    "ingestedAt": "2026-02-25T08:51:02.997079",
+    "ingestedAt": "2026-02-25T10:22:29.170731",
     "supplier": "jaycar",
     "parseConfidence": 0.9,
     "lines": [
       {
         "sku": "TL6459",
+        "manufacturer": "Elegoo",
         "material": "PLA+",
         "variant": "Elegoo PLA plus filament Grey 1.75mm 1kg",
         "pack": "Spool",
@@ -341,6 +383,7 @@
       },
       {
         "sku": "TL6202",
+        "manufacturer": "SUNLU",
         "material": "PLA",
         "variant": "SUNLU High Speed PLA Marble Shadow Storm",
         "pack": "Spool",
@@ -350,12 +393,13 @@
   },
   {
     "sourceFile": "order-516-2-2057449.pdf",
-    "ingestedAt": "2026-02-25T08:51:03.011729",
+    "ingestedAt": "2026-02-25T10:22:29.198621",
     "supplier": "jaycar",
     "parseConfidence": 0.9,
     "lines": [
       {
         "sku": "TL6258",
+        "manufacturer": "SUNLU",
         "material": "PLA Silk+",
         "variant": "SUNLU Silk PLA+ Rainbow 06 1.75mm 1kg ro",
         "pack": "Spool",
@@ -363,6 +407,7 @@
       },
       {
         "sku": "TL6255",
+        "manufacturer": "SUNLU",
         "material": "PLA Silk+",
         "variant": "SUNLU Silk PLA+ Rainbow 03 1.75mm 1kg ro",
         "pack": "Spool",
@@ -370,9 +415,186 @@
       },
       {
         "sku": "TL6475",
+        "manufacturer": "Slic3D",
         "material": "PLA",
         "variant": "Slic3D PLA Spool-Less Grey 1.75mm 1kg fi",
         "pack": "Refill",
+        "qtyKg": 1
+      }
+    ]
+  },
+  {
+    "sourceFile": "Order details _ eBay1.pdf",
+    "ingestedAt": "2026-02-25T10:22:15.506378",
+    "supplier": "ebay",
+    "parseConfidence": 0.85,
+    "lines": [
+      {
+        "sku": "175355270016-01",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Yellow \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-02",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Orange \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-03",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Green \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-04",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Pink \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-05",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Grey \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-06",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Mint Green \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-07",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Sky Blue \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-08",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Black \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-09",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte Blue \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-10",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Matte White \u00b7 PETG (Matte)",
+        "pack": "Spool",
+        "qtyKg": 1
+      }
+    ]
+  },
+  {
+    "sourceFile": "Order details _ eBay2.pdf",
+    "ingestedAt": "2026-02-25T10:22:29.159558",
+    "supplier": "ebay",
+    "parseConfidence": 0.85,
+    "lines": [
+      {
+        "sku": "175355270016-01",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Mint Green \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-02",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Magenta \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-03",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Sunny Orange \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-04",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Chocolate \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-05",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Bone White \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-06",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Lemon Yellow \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-07",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Sakura Pink \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-08",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Oliver Green \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-09",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Black \u00b7 PETG",
+        "pack": "Spool",
+        "qtyKg": 1
+      },
+      {
+        "sku": "175355270016-10",
+        "manufacturer": "SUNLU",
+        "material": "PETG",
+        "variant": "Cyan \u00b7 PETG",
+        "pack": "Spool",
         "qtyKg": 1
       }
     ]

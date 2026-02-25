@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 import json
 import sys
+import re
 from pathlib import Path
 from datetime import datetime
 import fitz  # PyMuPDF
+import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -13,6 +15,7 @@ from render_and_crop import (
     crop_thumbnail_from_page_png,
     extract_product_images_from_pdf,
     save_image_bytes_as_png,
+    save_image_source_as_png,
 )
 from build_site import build_site
 
@@ -20,6 +23,104 @@ INVOICES_DIR = Path("invoices")
 DB_PATH = Path("site/db.json")
 IMAGES_DIR = Path("site/images")
 TMP_DIR = Path(".tmp")
+IMAGE_MAP_PATH = Path("image_map.json")
+LINE_OVERRIDES_PATH = Path("line_overrides.json")
+
+
+def _to_title_words(value: str) -> str:
+    value = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", value)
+    value = re.sub(r"\s+", " ", value).strip()
+    return value.title()
+
+
+def extract_ebay_lines_from_ocr(pdf_path: Path) -> list[dict]:
+    """Use OCR on eBay order PDFs to recover item code and material/color details."""
+    try:
+        import numpy as np
+        from PIL import Image
+        from rapidocr_onnxruntime import RapidOCR
+    except Exception:
+        return []
+
+    doc = fitz.open(pdf_path)
+    ocr = RapidOCR()
+    texts: list[str] = []
+
+    for page in doc:
+        pix = page.get_pixmap(matrix=fitz.Matrix(2.5, 2.5), alpha=False)
+        image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+        arr = np.array(image)
+        result, _ = ocr(arr)
+        for line in result or []:
+            line_text = str(line[1]).strip()
+            if line_text:
+                texts.append(line_text)
+
+    doc.close()
+    if not texts:
+        return []
+
+    joined = " | ".join(texts)
+    item_numbers = re.findall(r"Item\s*number\s*[:：]?\s*(\d{9,15})", joined, re.I)
+    item_code = item_numbers[0] if item_numbers else ""
+
+    variants: list[str] = []
+    seen: set[str] = set()
+    for text in texts:
+        low = text.lower()
+        if "petg" not in low:
+            continue
+        if "return" in low or "accepted" in low:
+            continue
+
+        normalized = text.replace("·", " ").replace("•", " ")
+        variant = ""
+
+        matte_match = re.search(r"matte\s*([a-zA-Z ]{2,40}?)\s*petg", normalized, re.I)
+        if matte_match:
+            color = _to_title_words(matte_match.group(1))
+            if any(token in color.lower() for token in ("sunlu", "printer", "filament", "pla")):
+                continue
+            variant = f"Matte {color} · PETG (Matte)"
+        else:
+            color_match = re.search(r"([a-zA-Z ]{2,40}?)\s*petg", normalized, re.I)
+            if not color_match:
+                continue
+            color = _to_title_words(color_match.group(1))
+            color = re.sub(r"\bItemnumber\b", "", color, flags=re.I).strip()
+            color = re.sub(r"\bFilament\b", "", color, flags=re.I).strip()
+            if any(token in color.lower() for token in ("sunlu", "printer", "filament", "pla", "itemnumber")):
+                continue
+            if len(color) < 2:
+                continue
+            variant = f"{color} · PETG"
+
+        if variant in seen:
+            continue
+        seen.add(variant)
+        variants.append(variant)
+
+    if not variants:
+        return []
+
+    lines: list[dict] = []
+    stem = re.sub(r"[^A-Z0-9]+", "-", pdf_path.stem.upper()).strip("-")
+    for index, variant in enumerate(variants, start=1):
+        sku = item_code if item_code else f"EBY-{stem}-{index:02d}"
+        if item_code:
+            sku = f"{item_code}-{index:02d}"
+        lines.append(
+            {
+                "sku": sku,
+                "manufacturer": "SUNLU",
+                "material": "PETG",
+                "variant": variant,
+                "pack": "Spool",
+                "qtyKg": 1,
+            }
+        )
+
+    return lines
 
 
 def extract_text_from_pdf(pdf_path: Path) -> str:
@@ -52,6 +153,106 @@ def invoice_key_from_filename(pdf_path: Path) -> str:
     return pdf_path.name
 
 
+def make_ebay_fallback_lines(pdf_path: Path, count: int) -> list[dict]:
+    """Create synthetic line items for eBay invoices when text extraction is unreadable."""
+    base = re.sub(r"[^A-Z0-9]+", "-", pdf_path.stem.upper()).strip("-")
+    lines = []
+    for index in range(count):
+        lines.append(
+            {
+                "sku": f"EBY-{base}-{index + 1:02d}",
+                "manufacturer": "SUNLU",
+                "material": "Filament",
+                "variant": f"eBay Filament Item {index + 1}",
+                "pack": "Unknown",
+                "qtyKg": 1,
+            }
+        )
+    return lines
+
+
+def load_image_map() -> dict[str, str]:
+    """Load optional SKU->imageSource map from image_map.json."""
+    if not IMAGE_MAP_PATH.exists():
+        return {}
+    try:
+        with open(IMAGE_MAP_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, dict):
+            return {str(k).upper(): str(v) for k, v in data.items()}
+    except Exception as e:
+        print(f"  Warning: couldn't load image map: {e}")
+    return {}
+
+
+def load_line_overrides() -> dict[str, dict]:
+    """Load optional SKU->line field overrides from line_overrides.json."""
+    if not LINE_OVERRIDES_PATH.exists():
+        return {}
+    try:
+        with open(LINE_OVERRIDES_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, dict):
+            normalized: dict[str, dict] = {}
+            for key, value in data.items():
+                if isinstance(value, dict):
+                    normalized[str(key).upper()] = value
+            return normalized
+    except Exception as e:
+        print(f"  Warning: couldn't load line overrides: {e}")
+    return {}
+
+
+def apply_line_overrides(lines: list[dict], overrides: dict[str, dict]) -> int:
+    """Apply per-SKU metadata overrides to parsed line items."""
+    if not overrides:
+        return 0
+
+    allowed_fields = {"manufacturer", "material", "variant", "pack", "qtyKg"}
+    applied = 0
+    for line in lines:
+        sku = str(line.get("sku", "")).upper()
+        if not sku or sku not in overrides:
+            continue
+        data = overrides[sku]
+        for field, value in data.items():
+            if field in allowed_fields:
+                line[field] = value
+        applied += 1
+    return applied
+
+
+def apply_image_map_for_lines(lines: list[dict], image_map: dict[str, str]) -> int:
+    """Apply mapped image sources to line-item SKU thumbnails."""
+    if not image_map:
+        return 0
+
+    applied = 0
+    for line in lines:
+        sku = str(line.get("sku", "")).upper()
+        if not sku:
+            continue
+        source = image_map.get(sku)
+        if not source:
+            continue
+
+        resolved_source = source
+        if not source.lower().startswith("http://") and not source.lower().startswith("https://"):
+            source_path = Path(source)
+            if not source_path.is_absolute():
+                source_path = Path(os.getcwd()) / source_path
+            resolved_source = str(source_path)
+
+        out_thumb = IMAGES_DIR / f"{sku}.png"
+        try:
+            save_image_source_as_png(resolved_source, str(out_thumb))
+            applied += 1
+        except Exception as e:
+            print(f"  Warning: couldn't apply mapped image for {sku}: {e}")
+
+    return applied
+
+
 def ingest_one(pdf_path: Path) -> dict:
     """Process a single PDF invoice"""
     print(f"Ingesting: {pdf_path.name}")
@@ -63,8 +264,34 @@ def ingest_one(pdf_path: Path) -> dict:
     text = extract_text_from_pdf(pdf_path)
     parsed = parse_invoice_text(text)
     lines = parsed.lines
+    image_map = load_image_map()
+    line_overrides = load_line_overrides()
     
     product_images = extract_product_images_from_pdf(str(pdf_path))
+    is_ebay_file = "ebay" in pdf_path.name.lower()
+
+    if is_ebay_file and parsed.supplier == "generic":
+        parsed.supplier = "ebay"
+        parsed.confidence = max(parsed.confidence, 0.4)
+
+    if is_ebay_file:
+        ocr_lines = extract_ebay_lines_from_ocr(pdf_path)
+        if ocr_lines:
+            lines = ocr_lines
+            parsed.supplier = "ebay"
+            parsed.confidence = max(parsed.confidence, 0.85)
+            print(f"  ✓ OCR extracted {len(lines)} eBay line item(s)")
+
+    if (parsed.supplier == "ebay" or is_ebay_file) and not lines and product_images:
+        lines = make_ebay_fallback_lines(pdf_path, len(product_images))
+        parsed.supplier = "ebay"
+        parsed.confidence = 0.5
+        print(f"  Info: eBay fallback created {len(lines)} line item(s) from embedded product images")
+
+    overrides_applied = apply_line_overrides(lines, line_overrides)
+    if overrides_applied:
+        print(f"  ✓ Applied {overrides_applied} line override(s)")
+
     used_embedded = 0
 
     if product_images:
@@ -97,6 +324,10 @@ def ingest_one(pdf_path: Path) -> dict:
                 print(f"  Warning: couldn't remove temp file {page_png.name}: {e}")
     elif used_embedded == 0:
         print("  Info: no embedded product images found for this supplier; skipping thumbnail fallback")
+
+    mapped_images = apply_image_map_for_lines(lines, image_map)
+    if mapped_images:
+        print(f"  ✓ Applied {mapped_images} mapped image(s)")
     
     return {
         "sourceFile": invoice_key_from_filename(pdf_path),

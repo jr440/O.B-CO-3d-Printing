@@ -21,7 +21,7 @@
   <table>
     <thead>
       <tr>
-        <th>Pic</th><th>Type</th><th>Colour</th><th>Pack</th><th>Total (kg)</th><th>SKU</th>
+        <th>Pic</th><th>Maker</th><th>Type</th><th>Colour</th><th>Pack</th><th>Total (kg)</th><th>SKU</th>
       </tr>
     </thead>
     <tbody id="rows"></tbody>
@@ -47,6 +47,7 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><div class="thumb"><img alt="${r.sku}"></div></td>
+          <td>${r.manufacturer || "Unknown"}</td>
           <td>${r.material}</td>
           <td>${r.variant}</td>
           <td>${r.pack}</td>
